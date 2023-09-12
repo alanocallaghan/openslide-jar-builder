@@ -1,0 +1,39 @@
+on: push
+
+jobs:
+  check:
+    name: Package openslide JAR
+    strategy:
+      matrix:
+        platform: [ ubuntu-latest ]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v2
+        with: 
+          repo: alanocallaghan/openslide-winbuild
+          workflow: main.yml
+          name: openslide-build-.*
+          name_is_regexp: true
+      - name: Download mac-arm64 CircleCI artifact
+        run: wget https://output.circle-artifacts.com/output/job/ab41f305-04e6-41c0-ac16-651ff6bb19a9/artifacts/0/openslide-mac-arm64-main.tar.gz
+      - name: Unpack
+        shell: bash
+        run: |
+          mkdir -p resources
+          tar -xvf openslide-build-main/openslide-build-main/openslide-linux-x86_64-main.tar.gz lib/libopenslide.so
+          tar -xvf openslide-build-main/openslide-build-main/openslide-mac-x86_64-main.tar.gz lib/libopenslide.dylib
+          unzip openslide-build-main/openslide-build-main/openslide-win-x86_64-main.zip lib/libopenslide-0.dll
+          mv libopenslide-0.dll openslide.dll
+          mv openslide.dll libopenslide* resources/
+      - name: Make jar
+        shell: bash
+        run: jar -c -f openslide-natives.jar -C resources/ .
