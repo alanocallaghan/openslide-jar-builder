@@ -37,4 +37,4 @@ jobs:
           mv openslide.dll libopenslide* resources/
       - name: Make jar
         shell: bash
-        run: jar -c -f openslide-natives.jar -C resources/ .
+        run: jar -c -f openslide-natives.jar -C resources/
