@@ -29,9 +29,10 @@ jobs:
         shell: bash
         run: |
           mkdir -p resources
-          tar xvf openslide-build-main/openslide-build-main/openslide-linux-x86_64-main.tar.gz openslide-linux-x86_64-main/lib/libopenslide.so.0 --strip-components=2
-          tar xvf openslide-build-main/openslide-build-main/openslide-mac-x86_64-main.tar.gz openslide-mac-x86_64-main/lib/libopenslide.dylib --strip-components=2
-          unzip -p openslide-build-main/openslide-build-main/openslide-win-x86_64-main.zip openslide-win-x86_64-main/bin/libopenslide-0.dll > openslide.dll
+          mv openslide-build-main/openslide-build-main/* ./
+          tar xvf openslide-linux-x86_64-main.tar.gz openslide-linux-x86_64-main/lib/libopenslide.so.0 --strip-components=2
+          tar xvf openslide-mac-x86_64-main.tar.gz openslide-mac-x86_64-main/lib/libopenslide.dylib --strip-components=2
+          unzip -p openslide-win-x86_64-main.zip openslide-win-x86_64-main/bin/libopenslide-0.dll > openslide.dll
           chmod 755 openslide.dll
           mv openslide.dll libopenslide* resources/
       - name: Make jar
