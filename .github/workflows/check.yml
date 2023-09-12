@@ -28,31 +28,33 @@ jobs:
         run: |
           wget https://output.circle-artifacts.com/output/job/ab41f305-04e6-41c0-ac16-651ff6bb19a9/artifacts/0/openslide-mac-arm64-main.tar.gz
           mv openslide-mac-arm64-main.tar.gz openslide-build-main/openslide-build-main/
-      - name: Unpack
+      - name: Unpack and organise natives
         shell: bash
         run: |
           mv openslide-build-main/openslide-build-main ./natives
           pushd natives
-          mkdir -p osx_arm64 osx_64 linux_64 windows_64
+          mkdir -p darwin-arm64 darwin-x86-64 linux-x86-64 win32-x86-64
           
           # mac arm
           tar xvf openslide-mac-arm64-main.tar.gz openslide-mac-arm64-main/lib/libopenslide.dylib --strip-components=2
-          mv libopenslide.dylib osx_arm64/
+          mv libopenslide.dylib darwin-arm64/
           
           # linux
           tar xvf openslide-linux-x86_64-main.tar.gz openslide-linux-x86_64-main/lib/libopenslide.so.0.4.1 --strip-components=2
-          mv libopenslide.so.0.4.1 linux_64/libopenslide.so
+          mv libopenslide.so.0.4.1 linux-x86-64/libopenslide.so
           
           # max x86_64
           tar xvf openslide-mac-x86_64-main.tar.gz openslide-mac-x86_64-main/lib/libopenslide.dylib --strip-components=2
-          mv libopenslide.dylib osx_64/
+          mv libopenslide.dylib darwin-x86-64/
 
           # windows
           unzip -p openslide-win-x86_64-main.zip openslide-win-x86_64-main/bin/libopenslide-0.dll > openslide.dll
           chmod 755 openslide.dll
-          mv openslide.dll windows_64/
+          mv openslide.dll win32-x86-64/
 
+          mv openslide-build-main.zip ../openslide-sources.zip
           rm *.zip *.tar.gz
+          jar cvf openslide-natives.jar *
           popd
       - name: Make jar
         shell: bash
