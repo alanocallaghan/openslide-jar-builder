@@ -62,8 +62,8 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: openslide-natives
-          path: natives/openslide-natives.jar
-      - name: Upload jar
+          path: openslide-natives.jar
+      - name: Upload sources
         uses: actions/upload-artifact@v1
         with:
           name: openslide-sources
