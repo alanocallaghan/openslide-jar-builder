@@ -28,13 +28,34 @@ jobs:
       - name: Unpack
         shell: bash
         run: |
-          mkdir -p resources
-          mv openslide-build-main/openslide-build-main/* ./
-          tar xvf openslide-linux-x86_64-main.tar.gz openslide-linux-x86_64-main/lib/libopenslide.so.0 --strip-components=2
+          mv openslide-build-main/openslide-build-main ./natives
+          pushd natives
+          mkdir -p osx_arm64 osx_64 linux_64 windows_64
+          
+          # mac arm
+          tar xvf openslide-mac-arm64-main.tar.gz openslide-mac-arm64-main/lib/libopenslide.dylib --strip-components=2
+          mv libopenslide.dylib osx_arm64/
+          
+          # linux
+          tar xvf openslide-linux-x86_64-main.tar.gz openslide-linux-x86_64-main/lib/libopenslide.so.0.4.1 --strip-components=2
+          mv libopenslide.so.0.4.1 linux_64/libopenslide.so
+          
+          # max x86_64
           tar xvf openslide-mac-x86_64-main.tar.gz openslide-mac-x86_64-main/lib/libopenslide.dylib --strip-components=2
+          mv libopenslide.dylib osx_64/
+
+          # windows
           unzip -p openslide-win-x86_64-main.zip openslide-win-x86_64-main/bin/libopenslide-0.dll > openslide.dll
           chmod 755 openslide.dll
-          mv openslide.dll libopenslide* resources/
+          mv openslide.dll windows_64/
+
+          rm *.zip *.tar.gz
+          popd
       - name: Make jar
         shell: bash
-        run: jar -c -f openslide-natives.jar -C resources/
+        run: jar cvf openslide-natives.jar natives
+      - name: Upload jar
+        uses: actions/upload-artifact@v1
+        with:
+          name: openslide-natives
+          path: openslide-natives.jar
