@@ -32,7 +32,7 @@ jobs:
         shell: bash
         run: |
           mv openslide-build-main/openslide-build-main/* ./
-          mkdir -p darwin-arm64 darwin linux-x86-64 win32-x86-64
+          mkdir -p darwin-arm64 darwin-x86-64 linux-x86-64 win32-x86-64
           
           # mac arm
           tar xvf openslide-mac-arm64-main.tar.gz openslide-mac-arm64-main/lib/libopenslide.dylib --strip-components=2
@@ -44,7 +44,7 @@ jobs:
           
           # max x86_64
           tar xvf openslide-mac-x86_64-main.tar.gz openslide-mac-x86_64-main/lib/libopenslide.dylib --strip-components=2
-          mv libopenslide.dylib darwin/
+          mv libopenslide.dylib darwin-x86-64/
 
           # windows
           unzip -p openslide-win-x86_64-main.zip openslide-win-x86_64-main/bin/libopenslide-0.dll > openslide.dll
@@ -57,7 +57,7 @@ jobs:
       - name: Make jar
         shell: bash
         run: |
-          jar cvf openslide-natives.jar darwin-arm64 darwin linux-x86-64 win32-x86-64
+          jar cvf openslide-natives.jar darwin-arm64 darwin-x86-64 linux-x86-64 win32-x86-64
       - name: Upload jar
         uses: actions/upload-artifact@v1
         with:
