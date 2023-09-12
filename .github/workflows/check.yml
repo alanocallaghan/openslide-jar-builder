@@ -54,6 +54,7 @@ jobs:
           mv openslide-build-main.zip openslide-sources.zip
           unzip openslide-sources.zip
           rm openslide-win-x86_64-main.zip openslide-mac-x86_64-main.tar.gz openslide-mac-arm64-main.tar.gz openslide-linux-x86_64-main.tar.gz openslide-sources.zip
+          ls -lah
       - name: Make jar
         shell: bash
         run: |
